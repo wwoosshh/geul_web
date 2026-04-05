@@ -2,6 +2,7 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
@@ -194,7 +195,7 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
   return (
     <div ref={containerRef} className={`markdown-body ${className || ""}`}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkBreaks]}
         rehypePlugins={[
           [rehypeHighlight, { detect: true, ignoreMissing: true }],
           rehypeSlug,
