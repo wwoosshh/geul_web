@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { geulLanguageDef, geulTheme } from "@/lib/geul-monarch";
 import type { editor } from "monaco-editor";
@@ -26,18 +26,10 @@ export function CodeEditor({ value, onChange, errors = [] }: CodeEditorProps) {
     monaco.editor.defineTheme("geul-dark", geulTheme);
   }, []);
 
-  const handleMount: OnMount = useCallback(
-    (editor, monaco) => {
-      editorRef.current = editor;
-      monacoRef.current = monaco;
-
-      // Apply error markers if any
-      if (errors.length > 0) {
-        applyErrorMarkers(editor, monaco, errors);
-      }
-    },
-    [errors]
-  );
+  const handleMount: OnMount = useCallback((editorInstance, monaco) => {
+    editorRef.current = editorInstance;
+    monacoRef.current = monaco;
+  }, []);
 
   const handleChange = useCallback(
     (val: string | undefined) => {
@@ -46,10 +38,14 @@ export function CodeEditor({ value, onChange, errors = [] }: CodeEditorProps) {
     [onChange]
   );
 
-  // Update markers when errors change
-  if (editorRef.current && monacoRef.current) {
-    applyErrorMarkers(editorRef.current, monacoRef.current, errors);
-  }
+  // Apply markers reactively when errors change — inside useEffect to avoid
+  // running Monaco mutations during render.
+  useEffect(() => {
+    const editorInstance = editorRef.current;
+    const monaco = monacoRef.current;
+    if (!editorInstance || !monaco) return;
+    applyErrorMarkers(editorInstance, monaco, errors);
+  }, [errors]);
 
   return (
     <div className="h-full w-full overflow-hidden rounded-md border border-geul-border">
@@ -94,21 +90,43 @@ export function CodeEditor({ value, onChange, errors = [] }: CodeEditorProps) {
 }
 
 function applyErrorMarkers(
-  editor: editor.IStandaloneCodeEditor,
+  editorInstance: editor.IStandaloneCodeEditor,
   monaco: Parameters<OnMount>[1],
   errors: EditorError[]
 ) {
-  const model = editor.getModel();
+  const model = editorInstance.getModel();
   if (!model) return;
 
-  const markers = errors.map((err) => ({
-    severity: monaco.MarkerSeverity.Error,
-    message: err.message,
-    startLineNumber: err.line,
-    startColumn: 1,
-    endLineNumber: err.line,
-    endColumn: model.getLineMaxColumn(err.line),
-  }));
+  const lineCount = model.getLineCount();
+
+  // Clamp line numbers into the valid [1, lineCount] range and drop
+  // entries whose line is clearly invalid. Monaco throws
+  // "Illegal value for lineNumber" for out-of-range values.
+  const markers = errors
+    .map((err) => {
+      if (!Number.isFinite(err.line)) return null;
+      let line = Math.floor(err.line);
+      if (line < 1) line = 1;
+      if (line > lineCount) line = lineCount;
+      if (line < 1 || line > lineCount) return null;
+
+      let endColumn = 1;
+      try {
+        endColumn = model.getLineMaxColumn(line);
+      } catch {
+        endColumn = 1;
+      }
+
+      return {
+        severity: monaco.MarkerSeverity.Error,
+        message: err.message,
+        startLineNumber: line,
+        startColumn: 1,
+        endLineNumber: line,
+        endColumn,
+      };
+    })
+    .filter((m): m is NonNullable<typeof m> => m !== null);
 
   monaco.editor.setModelMarkers(model, "geul", markers);
 }

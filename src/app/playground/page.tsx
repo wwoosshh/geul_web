@@ -57,18 +57,27 @@ export default function PlaygroundPage() {
         { type: "stderr", text: msg.errors ?? "컴파일 오류 발생" },
       ]);
 
-      // Parse error lines if possible
+      // Parse error lines if possible. Accept only patterns that look like
+      // "file:line:col" or "line N" forms. Guard against bogus matches that
+      // would later crash Monaco with "Illegal value for lineNumber".
       if (msg.errors) {
+        const totalLines = code.split("\n").length;
         const lineErrors: { line: number; message: string }[] = [];
         const lines = msg.errors.split("\n");
         for (const line of lines) {
-          const match = line.match(/:(\d+):/);
-          if (match) {
-            lineErrors.push({
-              line: parseInt(match[1], 10),
-              message: line.trim(),
-            });
+          // Match "...:<line>:<col>:" or "line <N>" style
+          const m1 = line.match(/[:\s](\d+):(\d+)[:\s]/);
+          const m2 = line.match(/(?:line|라인|줄)\s*(\d+)/i);
+          const match = m1 || m2;
+          if (!match) continue;
+          const lineNum = parseInt(match[1], 10);
+          if (!Number.isFinite(lineNum) || lineNum < 1 || lineNum > totalLines) {
+            continue;
           }
+          lineErrors.push({
+            line: lineNum,
+            message: line.trim(),
+          });
         }
         if (lineErrors.length > 0) setErrors(lineErrors);
       }
