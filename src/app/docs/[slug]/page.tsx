@@ -11,7 +11,6 @@ export default async function DocPage({
 }) {
   const { slug: rawSlug } = await params;
 
-  // Defensively decode in case Next.js didn't already.
   let slug = rawSlug;
   try {
     slug = decodeURIComponent(rawSlug);
@@ -22,36 +21,14 @@ export default async function DocPage({
 
   const supabase = await createClient();
 
-  // Primary query — exact match on published docs
-  const { data: doc, error } = await supabase
+  const { data: doc } = await supabase
     .from("docs")
     .select("*")
     .eq("slug", slug)
     .eq("is_published", true)
     .maybeSingle();
 
-  if (error) {
-    console.error("[docs/[slug]] query error:", JSON.stringify(error), "slug=", slug);
-  }
-
   if (!doc) {
-    // Diagnostic: fetch all published doc slugs so we can see the mismatch.
-    const { data: allDocs } = await supabase
-      .from("docs")
-      .select("slug, title, is_published")
-      .eq("is_published", true);
-    console.warn(
-      "[docs/[slug]] notFound — rawSlug:",
-      JSON.stringify(rawSlug),
-      "decodedSlug:",
-      JSON.stringify(slug),
-      "slugLen:",
-      slug.length,
-      "slugCharCodes:",
-      [...slug].map((c) => c.charCodeAt(0)).join(","),
-      "availablePublished:",
-      JSON.stringify(allDocs)
-    );
     notFound();
   }
 
