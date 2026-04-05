@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
@@ -33,12 +32,6 @@ export default async function DocsPage() {
     console.error("[docs] unexpected error:", e);
   }
 
-  // If there are docs, redirect to the first one.
-  if (docs.length > 0) {
-    redirect(`/docs/${docs[0].slug}`);
-  }
-
-  // Empty state
   const grouped = CATEGORIES.reduce<Record<string, DocListItem[]>>(
     (acc, cat) => {
       acc[cat] = docs.filter((d) => d.category === cat);
@@ -47,37 +40,48 @@ export default async function DocsPage() {
     {}
   );
 
-  return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-geul-text mb-8">문서</h1>
+  const totalCount = docs.length;
 
-      {docs.length === 0 && (
+  return (
+    <div className="max-w-3xl mx-auto px-4 py-16">
+      <div className="mb-12">
+        <h1 className="text-3xl font-bold text-geul-text mb-2">문서</h1>
         <p className="text-geul-text-secondary">
+          글 프로그래밍 언어의 공식 문서입니다.
+        </p>
+      </div>
+
+      {totalCount === 0 ? (
+        <p className="text-geul-text-muted text-sm">
           아직 등록된 문서가 없습니다.
         </p>
+      ) : (
+        <div className="space-y-10">
+          {CATEGORIES.map((cat) => {
+            const items = grouped[cat];
+            if (!items || items.length === 0) return null;
+            return (
+              <section key={cat}>
+                <h2 className="text-sm font-semibold text-geul-text-muted uppercase tracking-wider mb-4">
+                  {cat}
+                </h2>
+                <ul className="space-y-2 border-l border-geul-border pl-4">
+                  {items.map((doc) => (
+                    <li key={doc.id}>
+                      <Link
+                        href={`/docs/${encodeURIComponent(doc.slug)}`}
+                        className="block text-geul-text-secondary hover:text-geul-primary transition-colors"
+                      >
+                        {doc.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
+        </div>
       )}
-
-      {CATEGORIES.map((cat) => {
-        const items = grouped[cat];
-        if (!items || items.length === 0) return null;
-        return (
-          <section key={cat} className="mb-8">
-            <h2 className="text-lg font-semibold text-geul-text mb-3">{cat}</h2>
-            <ul className="space-y-1">
-              {items.map((doc) => (
-                <li key={doc.id}>
-                  <Link
-                    href={`/docs/${doc.slug}`}
-                    className="text-geul-text-secondary hover:text-geul-primary transition-colors text-sm"
-                  >
-                    {doc.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        );
-      })}
     </div>
   );
 }
