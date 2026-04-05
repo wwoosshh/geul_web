@@ -38,6 +38,7 @@ export function RegisterForm() {
         password,
         options: {
           data: { nickname },
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/auth/confirmed`,
         },
       });
 
