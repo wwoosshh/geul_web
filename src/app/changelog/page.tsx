@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { MarkdownRenderer } from "@/components/docs/markdown-renderer";
+import { MarkdownRenderer } from "@/components/docs/markdown";
 import type { ChangelogEntry } from "@/types";
 
 export const metadata = {

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { MarkdownRenderer } from "@/components/docs/markdown-renderer";
+import { MarkdownRenderer } from "@/components/docs/markdown";
 import { Sidebar } from "@/components/docs/sidebar";
 import { TableOfContents } from "@/components/docs/toc";
 
