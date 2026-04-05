@@ -157,6 +157,16 @@ body {
   background-color: #ef444415;
 }
 
+/* Disable font ligatures inside markdown code so operators like !=, <=, >=,
+   and -> render as-is instead of being replaced by ≠, ≤, ≥, → glyphs.
+   The playground code editor keeps ligatures enabled via Monaco options. */
+.markdown-body code,
+.markdown-body pre,
+.markdown-body pre code {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
 /* Anchor link icon on headings */
 .markdown-body h1 a,
 .markdown-body h2 a,
