@@ -43,6 +43,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (content.length > 10000) {
+    return NextResponse.json(
+      { error: "댓글은 10,000자를 초과할 수 없습니다" },
+      { status: 400 }
+    );
+  }
+
   const { data, error } = await supabase
     .from("forum_comments")
     .insert({

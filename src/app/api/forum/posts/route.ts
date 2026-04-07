@@ -56,6 +56,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (title.length > 200) {
+    return NextResponse.json({ error: "제목은 200자를 초과할 수 없습니다" }, { status: 400 });
+  }
+  if (content.length > 50000) {
+    return NextResponse.json({ error: "내용은 50,000자를 초과할 수 없습니다" }, { status: 400 });
+  }
+
   // "notice" category: admin only
   if (category === "notice") {
     const { data: profile } = await supabase

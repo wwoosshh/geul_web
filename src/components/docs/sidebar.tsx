@@ -14,23 +14,25 @@ interface Doc {
 
 interface SidebarProps {
   currentSlug?: string;
+  initialDocs?: Doc[];
 }
 
 const CATEGORIES = ["시작하기", "문법", "표준라이브러리", "고급", "도구"];
 
-export function Sidebar({ currentSlug }: SidebarProps) {
-  const [docs, setDocs] = useState<Doc[]>([]);
+export function Sidebar({ currentSlug, initialDocs }: SidebarProps) {
+  const [docs, setDocs] = useState<Doc[]>(initialDocs ?? []);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
+    if (initialDocs) return;
     fetch("/api/docs")
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data)) setDocs(data);
       })
       .catch(() => {});
-  }, []);
+  }, [initialDocs]);
 
   const grouped = CATEGORIES.reduce<Record<string, Doc[]>>((acc, cat) => {
     acc[cat] = docs.filter((d) => d.category === cat);

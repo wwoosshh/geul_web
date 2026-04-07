@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export interface OutputLine {
+  id: string;
   type: "stdout" | "stderr" | "system";
   text: string;
 }
@@ -66,9 +67,9 @@ export function OutputPanel({ output, compileLog, onClear }: OutputPanelProps) {
               프로그램을 실행하면 출력이 여기에 표시됩니다.
             </p>
           ) : (
-            output.map((line, i) => (
+            output.map((line) => (
               <div
-                key={i}
+                key={line.id}
                 className={
                   line.type === "stderr"
                     ? "text-geul-error"

@@ -10,6 +10,11 @@ import { ConnectionStatus } from "@/components/playground/connection-status";
 
 const DEFAULT_CODE = EXAMPLES["안녕세계"];
 
+let outputIdCounter = 0;
+function createLine(type: OutputLine["type"], text: string): OutputLine {
+  return { id: `out-${++outputIdCounter}`, type, text };
+}
+
 export default function PlaygroundPage() {
   const router = useRouter();
   const agentRef = useRef<AgentClient | null>(null);
@@ -43,7 +48,7 @@ export default function PlaygroundPage() {
       setCompileLog(msg.data ?? "컴파일 성공");
       setOutput((prev) => [
         ...prev,
-        { type: "system", text: "-- 컴파일 완료. 실행 중... --" },
+        createLine("system", "-- 컴파일 완료. 실행 중... --"),
       ]);
       setIsRunning(true);
       agent.run();
@@ -54,7 +59,7 @@ export default function PlaygroundPage() {
       setCompileLog(msg.errors ?? msg.data ?? "컴파일 오류");
       setOutput((prev) => [
         ...prev,
-        { type: "stderr", text: msg.errors ?? "컴파일 오류 발생" },
+        createLine("stderr", msg.errors ?? "컴파일 오류 발생"),
       ]);
 
       // Parse error lines if possible. Accept only patterns that look like
@@ -85,13 +90,13 @@ export default function PlaygroundPage() {
 
     agent.on("stdout", (msg: AgentMessage) => {
       if (msg.data) {
-        setOutput((prev) => [...prev, { type: "stdout", text: msg.data! }]);
+        setOutput((prev) => [...prev, createLine("stdout", msg.data!)]);
       }
     });
 
     agent.on("stderr", (msg: AgentMessage) => {
       if (msg.data) {
-        setOutput((prev) => [...prev, { type: "stderr", text: msg.data! }]);
+        setOutput((prev) => [...prev, createLine("stderr", msg.data!)]);
       }
     });
 
@@ -100,10 +105,7 @@ export default function PlaygroundPage() {
       const exitCode = msg.code ?? 0;
       setOutput((prev) => [
         ...prev,
-        {
-          type: "system",
-          text: `-- 프로그램 종료 (코드: ${exitCode}) --`,
-        },
+        createLine("system", `-- 프로그램 종료 (코드: ${exitCode}) --`),
       ]);
     });
 

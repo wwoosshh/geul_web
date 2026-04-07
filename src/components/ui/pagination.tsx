@@ -48,7 +48,7 @@ export function Pagination({
         disabled={currentPage <= 1}
         className="px-3 py-1.5 text-sm text-geul-text-secondary hover:text-geul-text rounded-md transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
       >
-        Prev
+        이전
       </button>
       {pages.map((page, i) =>
         page === "..." ? (
@@ -77,7 +77,7 @@ export function Pagination({
         disabled={currentPage >= totalPages}
         className="px-3 py-1.5 text-sm text-geul-text-secondary hover:text-geul-text rounded-md transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
       >
-        Next
+        다음
       </button>
     </nav>
   );

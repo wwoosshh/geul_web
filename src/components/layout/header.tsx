@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogoIcon, MenuIcon, CloseIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
-import type { User } from "@supabase/supabase-js";
+import { useAuth } from "@/lib/hooks/use-auth";
 
 const navLinks = [
   { href: "/docs", label: "문서" },
@@ -23,46 +23,13 @@ const adminLinks = [
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { user, isAdmin } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
-
-  useEffect(() => {
-    const supabase = createClient();
-
-    async function loadUserAndRole(currentUser: User | null) {
-      setUser(currentUser);
-      if (!currentUser) {
-        setIsAdmin(false);
-        return;
-      }
-      const { data } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", currentUser.id)
-        .single();
-      setIsAdmin(data?.role === "admin");
-    }
-
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      loadUserAndRole(user);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      loadUserAndRole(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   async function handleLogout() {
     const supabase = createClient();
     await supabase.auth.signOut();
-    setUser(null);
-    setIsAdmin(false);
     router.refresh();
   }
 

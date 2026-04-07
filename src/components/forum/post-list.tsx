@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { PostCard } from "@/components/forum/post-card";
 import { Pagination } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/hooks/use-auth";
 import type { ForumPost, ForumCategory } from "@/types";
 import { FORUM_CATEGORY_LABELS } from "@/types";
 
@@ -31,14 +31,7 @@ export function PostList({ initialCategory }: PostListProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setIsLoggedIn(!!user);
-    });
-  }, []);
+  const { isLoggedIn } = useAuth();
 
   const fetchPosts = useCallback(async (category: ForumCategory | "all", page: number) => {
     setLoading(true);

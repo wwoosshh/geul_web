@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MarkdownRenderer } from "@/components/docs/markdown-renderer";
 import { CommentSection } from "@/components/forum/comment-section";
-import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/hooks/use-auth";
 import type { ForumPost, ForumCategory } from "@/types";
 import { FORUM_CATEGORY_LABELS } from "@/types";
 
@@ -36,25 +36,7 @@ export default function PostDetailPage() {
   const id = params.id as string;
   const [post, setPost] = useState<ForumPost | null>(null);
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        setUserId(user.id);
-        supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", user.id)
-          .single()
-          .then(({ data }) => {
-            setIsAdmin(data?.role === "admin");
-          });
-      }
-    });
-  }, []);
+  const { userId, isAdmin } = useAuth();
 
   useEffect(() => {
     async function fetchPost() {

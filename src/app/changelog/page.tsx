@@ -7,6 +7,17 @@ export const metadata = {
   description: "글 프로그래밍 언어의 버전별 변경 사항",
 };
 
+function compareVersions(a: string, b: string): number {
+  const partsA = a.split(".").map(Number);
+  const partsB = b.split(".").map(Number);
+  const len = Math.max(partsA.length, partsB.length);
+  for (let i = 0; i < len; i++) {
+    const diff = (partsB[i] ?? 0) - (partsA[i] ?? 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}
+
 export default async function ChangelogPage() {
   const supabase = await createClient();
 
@@ -15,7 +26,11 @@ export default async function ChangelogPage() {
     .select("*")
     .order("release_date", { ascending: false });
 
-  const changelog = (entries ?? []) as ChangelogEntry[];
+  const changelog = ((entries ?? []) as ChangelogEntry[]).sort((a, b) => {
+    const dateCompare = b.release_date.localeCompare(a.release_date);
+    if (dateCompare !== 0) return dateCompare;
+    return compareVersions(a.version, b.version);
+  });
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">

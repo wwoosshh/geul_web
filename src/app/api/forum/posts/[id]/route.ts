@@ -9,24 +9,8 @@ export async function GET(
   const { id } = await params;
   const supabase = await createClient();
 
-  // Increment view count (best-effort, don't block on failure)
-  const { error: rpcError } = await supabase.rpc("increment_view_count", {
-    post_id: id,
-  });
-  if (rpcError) {
-    // Fallback: direct increment if RPC doesn't exist
-    const { data: current } = await supabase
-      .from("forum_posts")
-      .select("view_count")
-      .eq("id", id)
-      .single();
-    if (current) {
-      await supabase
-        .from("forum_posts")
-        .update({ view_count: (current.view_count || 0) + 1 })
-        .eq("id", id);
-    }
-  }
+  // Increment view count atomically (best-effort)
+  await supabase.rpc("increment_view_count", { post_id: id });
 
   // Fetch post
   const { data, error } = await supabase
@@ -94,7 +78,12 @@ export async function PUT(
 
   if (body.title !== undefined) updateData.title = body.title;
   if (body.content !== undefined) updateData.content = body.content;
-  if (body.category !== undefined) updateData.category = body.category;
+  if (body.category !== undefined) {
+    if (body.category === "notice" && !auth.isAdmin) {
+      return NextResponse.json({ error: "공지 카테고리는 관리자만 설정할 수 있습니다" }, { status: 403 });
+    }
+    updateData.category = body.category;
+  }
 
   // is_pinned: admin only
   if (body.is_pinned !== undefined && auth.isAdmin) {

@@ -32,9 +32,16 @@ export default async function DocPage({
     notFound();
   }
 
+  const { data: docsList } = await supabase
+    .from("docs")
+    .select("id, slug, title, category, sort_order")
+    .eq("is_published", true)
+    .order("category")
+    .order("sort_order");
+
   return (
     <div className="max-w-7xl mx-auto px-4 flex">
-      <Sidebar currentSlug={slug} />
+      <Sidebar currentSlug={slug} initialDocs={docsList ?? []} />
 
       <article className="flex-1 min-w-0 py-6 lg:px-8">
         <h1 className="text-3xl font-bold text-geul-text mb-6">{doc.title}</h1>

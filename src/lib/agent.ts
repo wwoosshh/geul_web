@@ -1,4 +1,8 @@
-const AGENT_URL = "ws://localhost:9400";
+function getAgentUrl() {
+  if (typeof window === "undefined") return "ws://localhost:9400";
+  const proto = window.location.protocol === "https:" ? "wss" : "ws";
+  return `${proto}://localhost:9400`;
+}
 
 type MessageType =
   | "compile_start"
@@ -32,13 +36,21 @@ export class AgentClient {
 
   connect(): Promise<boolean> {
     return new Promise((resolve) => {
+      let resolved = false;
+      const settle = (value: boolean) => {
+        if (!resolved) {
+          resolved = true;
+          resolve(value);
+        }
+      };
+
       try {
-        this.ws = new WebSocket(AGENT_URL);
+        this.ws = new WebSocket(getAgentUrl());
 
         this.ws.onopen = () => {
           this._connected = true;
           this.emit("connected", { type: "connected" });
-          resolve(true);
+          settle(true);
         };
 
         this.ws.onmessage = (e) => {
@@ -57,14 +69,14 @@ export class AgentClient {
 
         this.ws.onerror = () => {
           this._connected = false;
-          resolve(false);
+          settle(false);
         };
 
         setTimeout(() => {
-          if (!this._connected) resolve(false);
+          if (!this._connected) settle(false);
         }, 3000);
       } catch {
-        resolve(false);
+        settle(false);
       }
     });
   }

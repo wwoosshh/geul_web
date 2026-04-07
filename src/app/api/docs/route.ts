@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const category = request.nextUrl.searchParams.get("category");
   const all = request.nextUrl.searchParams.get("all");
 
-  // If "all" param is set, check admin and return all docs (including unpublished)
+  // If "all" param is set, verify admin — non-admins get 403
   let isAdmin = false;
   if (all) {
     const {
@@ -20,6 +20,9 @@ export async function GET(request: NextRequest) {
         .eq("id", user.id)
         .single();
       isAdmin = profile?.role === "admin";
+    }
+    if (!isAdmin) {
+      return NextResponse.json({ error: "관리자 권한이 필요합니다" }, { status: 403 });
     }
   }
 
