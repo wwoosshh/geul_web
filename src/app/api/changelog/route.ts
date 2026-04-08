@@ -8,7 +8,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("changelog_entries")
     .select("*")
-    .order("release_date", { ascending: false });
+    .order("sort_order", { ascending: false });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -45,6 +45,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "버전과 제목은 필수입니다" }, { status: 400 });
   }
 
+  // sort_order 자동 할당: 현재 최대값 + 1
+  const { data: maxRow } = await supabase
+    .from("changelog_entries")
+    .select("sort_order")
+    .order("sort_order", { ascending: false })
+    .limit(1)
+    .single();
+
+  const nextSortOrder = (maxRow?.sort_order ?? 0) + 1;
+
   const { data, error } = await supabase
     .from("changelog_entries")
     .insert({
@@ -52,6 +62,7 @@ export async function POST(request: NextRequest) {
       title,
       content: content || "",
       release_date: release_date || new Date().toISOString().split("T")[0],
+      sort_order: nextSortOrder,
     })
     .select()
     .single();

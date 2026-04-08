@@ -10,6 +10,7 @@ interface ChangelogEntry {
   title: string;
   content: string;
   release_date: string;
+  sort_order: number;
   created_at: string;
   updated_at: string;
 }
