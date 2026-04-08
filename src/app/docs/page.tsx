@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 const CATEGORIES = ["시작하기", "핵심 문법", "표준 라이브러리", "고급", "참조"];
 
 type DocListItem = {
