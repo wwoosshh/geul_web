@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
-const CATEGORIES = ["시작하기", "문법", "표준라이브러리", "고급", "도구"];
+const CATEGORIES = ["시작하기", "핵심 문법", "표준 라이브러리", "고급", "참조"];
 
 type DocListItem = {
   id: string;
