@@ -1,7 +1,5 @@
 function getAgentUrl() {
-  if (typeof window === "undefined") return "ws://localhost:9400";
-  const proto = window.location.protocol === "https:" ? "wss" : "ws";
-  return `${proto}://localhost:9400`;
+  return "ws://localhost:9400";
 }
 
 type MessageType =
