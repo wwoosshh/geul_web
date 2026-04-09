@@ -45,10 +45,10 @@ export default async function DocPage({
 
       <article className="flex-1 min-w-0 py-6 lg:px-8">
         <h1 className="text-3xl font-bold text-geul-text mb-6">{doc.title}</h1>
-        <MarkdownRenderer content={doc.content} />
+        <MarkdownRenderer content={doc.content.replace(/\r\n/g, '\n').trim()} />
       </article>
 
-      <TableOfContents content={doc.content} />
+      <TableOfContents content={doc.content.replace(/\r\n/g, '\n').trim()} />
     </div>
   );
 }
