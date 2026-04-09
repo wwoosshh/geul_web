@@ -26,12 +26,26 @@ interface MarkdownRendererProps {
   className?: string;
 }
 
+// CommonMark 파서(micromark)는 닫는 **  뒤에 한글이 바로 오면
+// right-flanking delimiter로 인식하지 못해 볼드가 깨진다.
+// 닫는 ** 뒤에 한글/CJK가 오면 공백을 삽입하여 우회.
+function fixCjkEmphasis(md: string): string {
+  return md.replace(/(\*{1,2})(?=[가-힣ㄱ-ㅎㅏ-ㅣ一-龥])/g, (match, stars, offset) => {
+    // 여는 ** 는 건드리지 않음 — 앞이 공백/줄시작/문장부호이면 여는 것
+    const before = md[offset - 1];
+    if (!before || /[\s\n(,.]/.test(before)) return match;
+    return stars + " ";
+  });
+}
+
 export function MarkdownRenderer({ content, className }: MarkdownRendererProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     ensureGeulRegistered();
   }, []);
+
+  const processed = fixCjkEmphasis(content);
 
   const components: Components = {
     // Code blocks and inline code
@@ -203,7 +217,7 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
         ]}
         components={components}
       >
-        {content}
+        {processed}
       </ReactMarkdown>
     </div>
   );
