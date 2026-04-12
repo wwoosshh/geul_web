@@ -5,8 +5,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/i18n";
 
 export function RegisterForm() {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
@@ -20,12 +22,12 @@ export function RegisterForm() {
     setError("");
 
     if (password !== passwordConfirm) {
-      setError("비밀번호가 일치하지 않습니다.");
+      setError(t.auth.passwordMismatch);
       return;
     }
 
     if (password.length < 6) {
-      setError("비밀번호는 최소 6자 이상이어야 합니다.");
+      setError(t.auth.passwordTooShort);
       return;
     }
 
@@ -49,7 +51,7 @@ export function RegisterForm() {
 
       setSuccess(true);
     } catch {
-      setError("회원가입 중 오류가 발생했습니다.");
+      setError(t.auth.registerError);
     } finally {
       setLoading(false);
     }
@@ -58,15 +60,15 @@ export function RegisterForm() {
   if (success) {
     return (
       <div className="text-center space-y-4">
-        <p className="text-geul-text">이메일을 확인해주세요.</p>
+        <p className="text-geul-text">{t.auth.checkEmail}</p>
         <p className="text-sm text-geul-text-secondary">
-          가입 확인 링크가 이메일로 전송되었습니다.
+          {t.auth.emailSent}
         </p>
         <Link
           href="/auth/login"
           className="text-sm text-geul-primary hover:underline"
         >
-          로그인 페이지로 이동
+          {t.auth.goToLogin}
         </Link>
       </div>
     );
@@ -75,51 +77,51 @@ export function RegisterForm() {
   return (
     <form onSubmit={handleRegister} className="space-y-4">
       <Input
-        label="이메일"
+        label={t.auth.email}
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="email@example.com"
+        placeholder={t.auth.emailPlaceholder}
         required
       />
       <Input
-        label="닉네임"
+        label={t.auth.nickname}
         type="text"
         value={nickname}
         onChange={(e) => setNickname(e.target.value)}
-        placeholder="닉네임을 입력하세요"
+        placeholder={t.auth.nicknamePlaceholder}
         required
       />
       <Input
-        label="비밀번호"
+        label={t.auth.password}
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="최소 6자 이상"
+        placeholder={t.auth.passwordMinLength}
         required
       />
       <Input
-        label="비밀번호 확인"
+        label={t.auth.passwordConfirm}
         type="password"
         value={passwordConfirm}
         onChange={(e) => setPasswordConfirm(e.target.value)}
-        placeholder="비밀번호를 다시 입력하세요"
+        placeholder={t.auth.passwordConfirmPlaceholder}
         required
       />
 
       {error && <p className="text-sm text-geul-error">{error}</p>}
 
       <Button type="submit" loading={loading} className="w-full">
-        회원가입
+        {t.auth.register}
       </Button>
 
       <p className="text-center text-sm text-geul-text-secondary mt-6">
-        이미 계정이 있으신가요?{" "}
+        {t.auth.hasAccount}{" "}
         <Link
           href="/auth/login"
           className="text-sm text-geul-primary hover:underline"
         >
-          로그인
+          {t.auth.login}
         </Link>
       </p>
     </form>

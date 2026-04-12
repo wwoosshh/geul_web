@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { GitHubIcon } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
+import { useLanguage } from "@/lib/i18n";
 
 export function LoginForm() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -35,7 +37,7 @@ export function LoginForm() {
       router.push("/");
       router.refresh();
     } catch {
-      setError("로그인 중 오류가 발생했습니다.");
+      setError(t.auth.loginError);
     } finally {
       setLoading(false);
     }
@@ -54,26 +56,26 @@ export function LoginForm() {
   return (
     <form onSubmit={handleEmailLogin} className="space-y-4">
       <Input
-        label="이메일"
+        label={t.auth.email}
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="email@example.com"
+        placeholder={t.auth.emailPlaceholder}
         required
       />
       <Input
-        label="비밀번호"
+        label={t.auth.password}
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        placeholder="비밀번호를 입력하세요"
+        placeholder={t.auth.passwordPlaceholder}
         required
       />
 
       {error && <p className="text-sm text-geul-error">{error}</p>}
 
       <Button type="submit" loading={loading} className="w-full">
-        로그인
+        {t.auth.login}
       </Button>
 
       <div className="relative my-6">
@@ -82,7 +84,7 @@ export function LoginForm() {
         </div>
         <div className="relative flex justify-center text-sm">
           <span className="bg-geul-surface px-3 text-geul-text-secondary">
-            또는
+            {t.auth.or}
           </span>
         </div>
       </div>
@@ -94,16 +96,16 @@ export function LoginForm() {
         onClick={handleGitHubLogin}
       >
         <GitHubIcon size={18} />
-        GitHub로 로그인
+        {t.auth.githubLogin}
       </Button>
 
       <p className="text-center text-sm text-geul-text-secondary mt-6">
-        계정이 없으신가요?{" "}
+        {t.auth.noAccount}{" "}
         <Link
           href="/auth/register"
           className="text-geul-primary hover:underline"
         >
-          회원가입
+          {t.auth.register}
         </Link>
       </p>
     </form>

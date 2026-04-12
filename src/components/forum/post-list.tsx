@@ -6,24 +6,16 @@ import { PostCard } from "@/components/forum/post-card";
 import { Pagination } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/hooks/use-auth";
+import { useLanguage } from "@/lib/i18n";
 import type { ForumPost, ForumCategory } from "@/types";
-import { FORUM_CATEGORY_LABELS } from "@/types";
 
 interface PostListProps {
   initialCategory?: ForumCategory;
 }
 
-const ALL_CATEGORIES: { key: ForumCategory | "all"; label: string }[] = [
-  { key: "all", label: "전체" },
-  { key: "notice", label: "공지" },
-  { key: "question", label: "질문" },
-  { key: "free", label: "자유" },
-  { key: "bug", label: "버그" },
-  { key: "project", label: "프로젝트" },
-];
-
 export function PostList({ initialCategory }: PostListProps) {
   const router = useRouter();
+  const { t, lang } = useLanguage();
   const [activeTab, setActiveTab] = useState<ForumCategory | "all">(
     initialCategory || "all"
   );
@@ -32,6 +24,15 @@ export function PostList({ initialCategory }: PostListProps) {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const { isLoggedIn } = useAuth();
+
+  const ALL_CATEGORIES: { key: ForumCategory | "all"; label: string }[] = [
+    { key: "all", label: lang === "ko" ? "전체" : "All" },
+    { key: "notice", label: t.forum.categories.notice },
+    { key: "question", label: lang === "ko" ? "질문" : "Q&A" },
+    { key: "free", label: lang === "ko" ? "자유" : "General" },
+    { key: "bug", label: lang === "ko" ? "버그" : "Bug" },
+    { key: "project", label: lang === "ko" ? "프로젝트" : "Project" },
+  ];
 
   const fetchPosts = useCallback(async (category: ForumCategory | "all", page: number) => {
     setLoading(true);
@@ -86,7 +87,7 @@ export function PostList({ initialCategory }: PostListProps) {
         <div className="flex-1" />
         {isLoggedIn && (
           <Button size="sm" onClick={() => router.push("/forum/write")}>
-            글 작성
+            {t.forum.write}
           </Button>
         )}
       </div>
@@ -94,11 +95,11 @@ export function PostList({ initialCategory }: PostListProps) {
       {/* Post list */}
       {loading ? (
         <div className="py-12 text-center text-geul-text-muted text-sm">
-          불러오는 중...
+          {lang === "ko" ? "불러오는 중..." : "Loading..."}
         </div>
       ) : posts.length === 0 ? (
         <div className="py-12 text-center text-geul-text-muted text-sm">
-          게시글이 없습니다.
+          {lang === "ko" ? "게시글이 없습니다." : "No posts yet."}
         </div>
       ) : (
         <div>

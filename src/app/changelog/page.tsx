@@ -1,13 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
+import { getServerLanguage } from "@/lib/i18n/server";
+import { translations } from "@/lib/i18n/translations";
 import { MarkdownRenderer } from "@/components/docs/markdown";
 import type { ChangelogEntry } from "@/types";
 
-export const metadata = {
-  title: "버전 이력 - 글",
-  description: "글 프로그래밍 언어의 버전별 변경 사항",
-};
-
 export default async function ChangelogPage() {
+  const lang = await getServerLanguage();
+  const t = translations[lang];
+
   const supabase = await createClient();
 
   const { data: entries } = await supabase
@@ -19,14 +19,14 @@ export default async function ChangelogPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold text-geul-text mb-2">버전 이력</h1>
+      <h1 className="text-3xl font-bold text-geul-text mb-2">{t.changelog.title}</h1>
       <p className="text-geul-text-secondary mb-12">
-        글 프로그래밍 언어의 변경 사항을 확인하세요.
+        {t.changelog.subtitle}
       </p>
 
       {changelog.length === 0 ? (
         <p className="text-geul-text-muted text-sm">
-          아직 등록된 버전 이력이 없습니다.
+          {t.changelog.empty}
         </p>
       ) : (
         <div className="relative">

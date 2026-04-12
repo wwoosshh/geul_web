@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getServerLanguage } from "@/lib/i18n/server";
+import { translations } from "@/lib/i18n/translations";
 import { MarkdownRenderer } from "@/components/docs/markdown";
 import { Sidebar } from "@/components/docs/sidebar";
 import { TableOfContents } from "@/components/docs/toc";
@@ -11,6 +13,9 @@ export default async function DocPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug: rawSlug } = await params;
+  const lang = await getServerLanguage();
+  const t = translations[lang];
+  const table = lang === "en" ? "docs_en" : "docs";
 
   let slug = rawSlug;
   try {
@@ -23,7 +28,7 @@ export default async function DocPage({
   const supabase = await createClient();
 
   const { data: doc } = await supabase
-    .from("docs")
+    .from(table)
     .select("*")
     .eq("slug", slug)
     .eq("is_published", true)
@@ -34,7 +39,7 @@ export default async function DocPage({
   }
 
   const { data: docsList } = await supabase
-    .from("docs")
+    .from(table)
     .select("id, slug, title, category, sort_order")
     .eq("is_published", true)
     .order("sort_order");
@@ -49,7 +54,7 @@ export default async function DocPage({
 
   return (
     <div className="max-w-7xl mx-auto px-4 flex">
-      <Sidebar currentSlug={slug} initialDocs={allDocs} />
+      <Sidebar currentSlug={slug} initialDocs={allDocs} lang={lang} />
 
       <article className="flex-1 min-w-0 py-6 lg:px-8">
         <h1 className="text-3xl font-bold text-geul-text mb-6">{doc.title}</h1>
@@ -61,7 +66,7 @@ export default async function DocPage({
               href={`/docs/${prevDoc.slug}`}
               className="flex-1 group rounded-lg border border-geul-border p-4 hover:border-geul-primary transition-colors"
             >
-              <span className="text-xs text-geul-text-muted">이전</span>
+              <span className="text-xs text-geul-text-muted">{t.docs.prev}</span>
               <p className="text-geul-text group-hover:text-geul-primary transition-colors font-medium mt-1">
                 {prevDoc.title}
               </p>
@@ -74,7 +79,7 @@ export default async function DocPage({
               href={`/docs/${nextDoc.slug}`}
               className="flex-1 group rounded-lg border border-geul-border p-4 hover:border-geul-primary transition-colors text-right"
             >
-              <span className="text-xs text-geul-text-muted">다음</span>
+              <span className="text-xs text-geul-text-muted">{t.docs.next}</span>
               <p className="text-geul-text group-hover:text-geul-primary transition-colors font-medium mt-1">
                 {nextDoc.title}
               </p>
@@ -85,7 +90,7 @@ export default async function DocPage({
         </nav>
       </article>
 
-      <TableOfContents content={content} />
+      <TableOfContents content={content} lang={lang} />
     </div>
   );
 }

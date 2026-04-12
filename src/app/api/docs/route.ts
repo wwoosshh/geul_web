@@ -6,6 +6,8 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
   const category = request.nextUrl.searchParams.get("category");
   const all = request.nextUrl.searchParams.get("all");
+  const lang = request.nextUrl.searchParams.get("lang");
+  const table = lang === "en" ? "docs_en" : "docs";
 
   // If "all" param is set, verify admin — non-admins get 403
   let isAdmin = false;
@@ -30,7 +32,7 @@ export async function GET(request: NextRequest) {
     ? "*"
     : "id, slug, title, category, sort_order, is_published, created_at, updated_at";
 
-  let query = supabase.from("docs").select(columns).order("category").order("sort_order");
+  let query = supabase.from(table).select(columns).order("category").order("sort_order");
 
   if (!isAdmin) {
     query = query.eq("is_published", true);

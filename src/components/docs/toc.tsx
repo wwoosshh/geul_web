@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { translations, type Language } from "@/lib/i18n";
 
 interface TocItem {
   id: string;
@@ -10,6 +11,7 @@ interface TocItem {
 
 interface TocProps {
   content: string;
+  lang?: Language;
 }
 
 function parseHeadings(markdown: string): TocItem[] {
@@ -32,10 +34,11 @@ function parseHeadings(markdown: string): TocItem[] {
   return items;
 }
 
-export function TableOfContents({ content }: TocProps) {
+export function TableOfContents({ content, lang = "ko" }: TocProps) {
   const [activeId, setActiveId] = useState<string>("");
   const headings = parseHeadings(content);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const t = translations[lang];
 
   useEffect(() => {
     if (headings.length === 0) return;
@@ -69,7 +72,7 @@ export function TableOfContents({ content }: TocProps) {
   return (
     <nav className="hidden xl:block sticky top-14 h-[calc(100vh-3.5rem)] w-48 shrink-0 overflow-y-auto py-6 pl-4">
       <p className="text-xs font-medium text-geul-text-muted uppercase tracking-wider mb-3">
-        목차
+        {t.docs.toc}
       </p>
       <ul className="space-y-1">
         {headings.map((h) => (

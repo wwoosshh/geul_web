@@ -1,9 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
+import { getServerLanguage } from "@/lib/i18n/server";
+import { translations } from "@/lib/i18n/translations";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
-
-const CATEGORIES = ["시작하기", "핵심 문법", "표준 라이브러리", "고급", "참조"];
 
 type DocListItem = {
   id: string;
@@ -14,12 +14,16 @@ type DocListItem = {
 };
 
 export default async function DocsPage() {
+  const lang = await getServerLanguage();
+  const t = translations[lang];
+  const table = lang === "en" ? "docs_en" : "docs";
+
   let docs: DocListItem[] = [];
 
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
-      .from("docs")
+      .from(table)
       .select("id, slug, title, category, sort_order")
       .eq("is_published", true)
       .order("category", { ascending: true })
@@ -34,6 +38,8 @@ export default async function DocsPage() {
     console.error("[docs] unexpected error:", e);
   }
 
+  const CATEGORIES = t.docs.categories;
+
   const grouped = CATEGORIES.reduce<Record<string, DocListItem[]>>(
     (acc, cat) => {
       acc[cat] = docs.filter((d) => d.category === cat);
@@ -47,15 +53,15 @@ export default async function DocsPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
       <div className="mb-12">
-        <h1 className="text-3xl font-bold text-geul-text mb-2">문서</h1>
+        <h1 className="text-3xl font-bold text-geul-text mb-2">{t.docs.title}</h1>
         <p className="text-geul-text-secondary">
-          글 프로그래밍 언어의 공식 문서입니다.
+          {t.docs.subtitle}
         </p>
       </div>
 
       {totalCount === 0 ? (
         <p className="text-geul-text-muted text-sm">
-          아직 등록된 문서가 없습니다.
+          {t.docs.empty}
         </p>
       ) : (
         <div className="space-y-10">

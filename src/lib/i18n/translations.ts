@@ -1,0 +1,306 @@
+export type Language = "ko" | "en";
+
+export const translations = {
+  ko: {
+    // Navigation
+    nav: {
+      docs: "문서",
+      playground: "플레이그라운드",
+      forum: "포럼",
+      download: "다운로드",
+      changelog: "변경이력",
+      docManage: "문서 관리",
+      changelogManage: "이력 관리",
+      admin: "관리자",
+      login: "로그인",
+      logout: "로그아웃",
+    },
+    // Hero
+    hero: {
+      title: "프로그래밍 언어",
+      subtitle: "한글로 프로그래밍하는 독자적 시스템 프로그래밍 언어",
+      tags: "100% 한글 키워드 · SOV 어순 · 네이티브 컴파일 · 자체호스팅",
+      getStarted: "시작하기",
+      playground: "플레이그라운드",
+    },
+    // Features
+    features: {
+      title: "특징",
+      subtitle: "한국어의 문법 구조를 프로그래밍 언어에 자연스럽게 녹여냈습니다.",
+      items: [
+        { title: "100% 한글 키워드", description: "영어 함수명이 사용자 코드에 노출되지 않음" },
+        { title: "SOV 어순", description: "한국어 문법처럼 \"대상을 함수하다\"" },
+        { title: "조사 바인딩", description: "\"을/를\", \"에\", \"로\" 등 조사가 인자 역할 결정" },
+        { title: "문자열 보간", description: "\"{이름}은 {나이}세\" 변수 직접 삽입" },
+        { title: "네이티브 컴파일", description: "C 컴파일러 없이 .글 → .exe 직접 컴파일" },
+        { title: "자체호스팅", description: "글 컴파일러가 자기 자신을 컴파일" },
+      ],
+    },
+    // Code Example
+    codeExample: {
+      title: "코드 예제",
+      subtitle: "한글 키워드와 SOV 어순으로 자연스럽게 읽히는 코드",
+      output: "출력",
+    },
+    // Benchmark
+    benchmark: {
+      title: "성능",
+      subtitle: "C(/O2) 대비 1.3~2.8x -- Python 대비 15~25x 빠름",
+      note: "C는 MSVC /O2 최적화 적용. Intel Ultra 5 226V, 5회 중앙값.",
+      headers: { benchmark: "벤치마크", geul: "글 네이티브", ratio: "배율" },
+      rows: [
+        { name: "재귀 fib(40)" },
+        { name: "소수 체 100만" },
+        { name: "버블정렬 3만" },
+      ],
+    },
+    // CTA
+    cta: {
+      title: "지금 시작하세요",
+      subtitle: "Windows 10/11에서 바로 사용할 수 있습니다.",
+      download: "다운로드",
+      viewDocs: "문서 보기",
+    },
+    // Docs
+    docs: {
+      title: "문서",
+      subtitle: "글 프로그래밍 언어의 공식 문서입니다.",
+      empty: "아직 등록된 문서가 없습니다.",
+      prev: "이전",
+      next: "다음",
+      toc: "목차",
+      sidebarOpen: "사이드바 열기",
+      sidebarClose: "사이드바 닫기",
+      categories: ["시작하기", "핵심 문법", "표준 라이브러리", "고급", "참조"],
+    },
+    // Download
+    download: {
+      badge: "플레이그라운드 패키지",
+      title: "글 다운로드",
+      subtitle: "글 컴파일러와 웹 에이전트를 다운로드하여 플레이그라운드에서 바로 코드를 작성하고 빌드하세요.",
+      button: "컴파일러 + 에이전트 다운로드 (.zip)",
+      includes: "네이티브컴파일러.exe + 글-에이전트.exe + 표준 라이브러리 포함",
+      packageTitle: "패키지 구성",
+      packageItems: [
+        { name: "네이티브컴파일러.exe", desc: "— .글 소스를 .exe로 직접 컴파일" },
+        { name: "글-에이전트.exe", desc: "— 웹 플레이그라운드 연동 로컬 서버" },
+        { name: "표준/", desc: "— 표준 라이브러리 (std.gl 포함)" },
+      ],
+      requirementsTitle: "시스템 요구 사항",
+      requirements: ["Windows 10/11 (x64)", "추가 요구 사항 없음 (MSVC 불필요)"],
+      installTitle: "설치 방법",
+      installSteps: [
+        "위 버튼으로 .zip 파일을 다운로드하고 원하는 폴더에 압축 해제",
+        "를 실행하여 로컬 서버 시작",
+        "에 접속하여 코드 작성 및 빌드",
+      ],
+      webPlayground: "플레이그라운드",
+      websitePrefix: "웹사이트의",
+    },
+    // Auth
+    auth: {
+      login: "로그인",
+      register: "회원가입",
+      email: "이메일",
+      password: "비밀번호",
+      passwordConfirm: "비밀번호 확인",
+      nickname: "닉네임",
+      emailPlaceholder: "email@example.com",
+      passwordPlaceholder: "비밀번호를 입력하세요",
+      passwordMinLength: "최소 6자 이상",
+      passwordConfirmPlaceholder: "비밀번호를 다시 입력하세요",
+      nicknamePlaceholder: "닉네임을 입력하세요",
+      or: "또는",
+      githubLogin: "GitHub로 로그인",
+      noAccount: "계정이 없으신가요?",
+      hasAccount: "이미 계정이 있으신가요?",
+      loginError: "로그인 중 오류가 발생했습니다.",
+      registerError: "회원가입 중 오류가 발생했습니다.",
+      passwordMismatch: "비밀번호가 일치하지 않습니다.",
+      passwordTooShort: "비밀번호는 최소 6자 이상이어야 합니다.",
+      checkEmail: "이메일을 확인해주세요.",
+      emailSent: "가입 확인 링크가 이메일로 전송되었습니다.",
+      goToLogin: "로그인 페이지로 이동",
+    },
+    // Changelog
+    changelog: {
+      title: "버전 이력",
+      subtitle: "글 프로그래밍 언어의 변경 사항을 확인하세요.",
+      empty: "아직 등록된 버전 이력이 없습니다.",
+    },
+    // Forum
+    forum: {
+      title: "커뮤니티",
+      subtitle: "글 언어 사용자들의 소통 공간",
+      write: "글쓰기",
+      categories: {
+        notice: "공지",
+        question: "질문 & 답변",
+        free: "자유게시판",
+        bug: "버그 리포트",
+        project: "프로젝트 공유",
+      },
+    },
+    // Footer
+    footer: {
+      text: "글 프로그래밍 언어 · MIT 라이선스",
+    },
+    // Common
+    common: {
+      relativeTime: {
+        justNow: "방금 전",
+        minutesAgo: (n: number) => `${n}분 전`,
+        hoursAgo: (n: number) => `${n}시간 전`,
+        daysAgo: (n: number) => `${n}일 전`,
+        monthsAgo: (n: number) => `${n}개월 전`,
+        yearsAgo: (n: number) => `${n}년 전`,
+      },
+    },
+  },
+
+  en: {
+    nav: {
+      docs: "Docs",
+      playground: "Playground",
+      forum: "Forum",
+      download: "Download",
+      changelog: "Changelog",
+      docManage: "Manage Docs",
+      changelogManage: "Manage Changelog",
+      admin: "Admin",
+      login: "Login",
+      logout: "Logout",
+    },
+    hero: {
+      title: "Programming Language",
+      subtitle: "A systems programming language where you code in Korean",
+      tags: "100% Korean keywords · SOV word order · Native compilation · Self-hosting",
+      getStarted: "Get Started",
+      playground: "Playground",
+    },
+    features: {
+      title: "Features",
+      subtitle: "Korean grammar structures naturally integrated into a programming language.",
+      items: [
+        { title: "100% Korean Keywords", description: "No English function names exposed to user code" },
+        { title: "SOV Word Order", description: "Like Korean grammar: \"target을 function하다\"" },
+        { title: "Particle Binding", description: "Particles like 을/를, 에, 로 determine argument roles" },
+        { title: "String Interpolation", description: "\"{name}은 {age}세\" — insert variables directly" },
+        { title: "Native Compilation", description: "Compiles .gl → .exe directly without a C compiler" },
+        { title: "Self-Hosting", description: "The Geul compiler compiles itself" },
+      ],
+    },
+    codeExample: {
+      title: "Code Example",
+      subtitle: "Code that reads naturally with Korean keywords and SOV word order",
+      output: "Output",
+    },
+    benchmark: {
+      title: "Performance",
+      subtitle: "1.3–2.8x vs C(/O2) — 15–25x faster than Python",
+      note: "C compiled with MSVC /O2. Intel Ultra 5 226V, median of 5 runs.",
+      headers: { benchmark: "Benchmark", geul: "Geul Native", ratio: "Ratio" },
+      rows: [
+        { name: "Recursive fib(40)" },
+        { name: "Sieve of primes 1M" },
+        { name: "Bubble sort 30K" },
+      ],
+    },
+    cta: {
+      title: "Get Started Now",
+      subtitle: "Available on Windows 10/11.",
+      download: "Download",
+      viewDocs: "View Docs",
+    },
+    docs: {
+      title: "Documentation",
+      subtitle: "Official documentation for the Geul programming language.",
+      empty: "No documents available yet.",
+      prev: "Previous",
+      next: "Next",
+      toc: "On this page",
+      sidebarOpen: "Open sidebar",
+      sidebarClose: "Close sidebar",
+      categories: ["Getting Started", "Core Syntax", "Standard Library", "Advanced", "Reference"],
+    },
+    download: {
+      badge: "Playground Package",
+      title: "Download Geul",
+      subtitle: "Download the Geul compiler and web agent to write and build code right in the playground.",
+      button: "Download Compiler + Agent (.zip)",
+      includes: "Includes native compiler + Geul agent + standard library",
+      packageTitle: "Package Contents",
+      packageItems: [
+        { name: "Native Compiler (.exe)", desc: "— Compiles .gl source directly to .exe" },
+        { name: "Geul Agent (.exe)", desc: "— Local server for web playground integration" },
+        { name: "std/", desc: "— Standard library (includes std.gl)" },
+      ],
+      requirementsTitle: "System Requirements",
+      requirements: ["Windows 10/11 (x64)", "No additional requirements (MSVC not needed)"],
+      installTitle: "Installation",
+      installSteps: [
+        "Download the .zip file using the button above and extract to a folder",
+        "to start the local server",
+        "to write and build code",
+      ],
+      webPlayground: "Playground",
+      websitePrefix: "Visit the",
+    },
+    auth: {
+      login: "Login",
+      register: "Register",
+      email: "Email",
+      password: "Password",
+      passwordConfirm: "Confirm Password",
+      nickname: "Nickname",
+      emailPlaceholder: "email@example.com",
+      passwordPlaceholder: "Enter your password",
+      passwordMinLength: "At least 6 characters",
+      passwordConfirmPlaceholder: "Re-enter your password",
+      nicknamePlaceholder: "Enter your nickname",
+      or: "or",
+      githubLogin: "Login with GitHub",
+      noAccount: "Don't have an account?",
+      hasAccount: "Already have an account?",
+      loginError: "An error occurred during login.",
+      registerError: "An error occurred during registration.",
+      passwordMismatch: "Passwords do not match.",
+      passwordTooShort: "Password must be at least 6 characters.",
+      checkEmail: "Please check your email.",
+      emailSent: "A confirmation link has been sent to your email.",
+      goToLogin: "Go to login page",
+    },
+    changelog: {
+      title: "Changelog",
+      subtitle: "View changes to the Geul programming language.",
+      empty: "No changelog entries yet.",
+    },
+    forum: {
+      title: "Community",
+      subtitle: "A space for Geul language users to connect",
+      write: "Write",
+      categories: {
+        notice: "Notice",
+        question: "Q&A",
+        free: "General",
+        bug: "Bug Report",
+        project: "Project Showcase",
+      },
+    },
+    footer: {
+      text: "Geul Programming Language · MIT License",
+    },
+    common: {
+      relativeTime: {
+        justNow: "just now",
+        minutesAgo: (n: number) => `${n}m ago`,
+        hoursAgo: (n: number) => `${n}h ago`,
+        daysAgo: (n: number) => `${n}d ago`,
+        monthsAgo: (n: number) => `${n}mo ago`,
+        yearsAgo: (n: number) => `${n}y ago`,
+      },
+    },
+  },
+};
+
+export type Translations = (typeof translations)["ko"];

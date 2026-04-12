@@ -1,12 +1,18 @@
+"use client";
+
+import { useLanguage } from "@/lib/i18n";
+
 export default function CodeExample() {
+  const { t } = useLanguage();
+
   return (
     <section className="py-24 sm:py-32">
       <div className="mx-auto max-w-5xl px-6">
         <h2 className="text-2xl sm:text-3xl font-semibold text-geul-text mb-4">
-          코드 예제
+          {t.codeExample.title}
         </h2>
         <p className="text-geul-text-secondary mb-12 max-w-2xl">
-          한글 키워드와 SOV 어순으로 자연스럽게 읽히는 코드
+          {t.codeExample.subtitle}
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6">
@@ -58,7 +64,7 @@ export default function CodeExample() {
           {/* Output */}
           <div className="rounded-md bg-geul-bg border border-geul-border overflow-hidden lg:min-w-[280px]">
             <div className="px-4 py-2 text-xs text-geul-text-muted border-b border-geul-border">
-              출력
+              {t.codeExample.output}
             </div>
             <pre className="p-5 font-mono text-sm leading-7">
               <code>

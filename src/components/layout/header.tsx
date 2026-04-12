@@ -7,25 +7,27 @@ import { LogoIcon, MenuIcon, CloseIcon } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/hooks/use-auth";
-
-const navLinks = [
-  { href: "/docs", label: "문서" },
-  { href: "/playground", label: "플레이그라운드" },
-  { href: "/forum", label: "포럼" },
-  { href: "/download", label: "다운로드" },
-  { href: "/changelog", label: "변경이력" },
-];
-
-const adminLinks = [
-  { href: "/admin/docs", label: "문서 관리" },
-  { href: "/admin/changelog", label: "이력 관리" },
-];
+import { useLanguage } from "@/lib/i18n";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, isAdmin } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
+  const { lang, t, toggleLang } = useLanguage();
+
+  const navLinks = [
+    { href: "/docs", label: t.nav.docs },
+    { href: "/playground", label: t.nav.playground },
+    { href: "/forum", label: t.nav.forum },
+    { href: "/download", label: t.nav.download },
+    { href: "/changelog", label: t.nav.changelog },
+  ];
+
+  const adminLinks = [
+    { href: "/admin/docs", label: t.nav.docManage },
+    { href: "/admin/changelog", label: t.nav.changelogManage },
+  ];
 
   async function handleLogout() {
     const supabase = createClient();
@@ -89,24 +91,33 @@ export function Header() {
 
         {/* Right side */}
         <div className="hidden md:flex items-center gap-3">
+          {/* Language Toggle */}
+          <button
+            onClick={toggleLang}
+            className="text-xs font-medium px-2 py-1 rounded border border-geul-border text-geul-text-secondary hover:text-geul-text hover:border-geul-text-secondary transition-colors cursor-pointer"
+            aria-label="Toggle language"
+          >
+            {lang === "ko" ? "EN" : "KO"}
+          </button>
+
           {user ? (
             <>
               <span className="text-sm text-geul-text-secondary">
                 {nickname}
                 {isAdmin && (
                   <span className="ml-1.5 text-xs text-geul-warning">
-                    관리자
+                    {t.nav.admin}
                   </span>
                 )}
               </span>
               <Button variant="ghost" size="sm" onClick={handleLogout}>
-                로그아웃
+                {t.nav.logout}
               </Button>
             </>
           ) : (
             <Link href="/auth/login">
               <Button variant="secondary" size="sm">
-                로그인
+                {t.nav.login}
               </Button>
             </Link>
           )}
@@ -144,7 +155,7 @@ export function Header() {
             {isAdmin && (
               <div className="border-t border-geul-border pt-3 mt-1 flex flex-col gap-3">
                 <span className="text-xs text-geul-text-muted uppercase tracking-wider">
-                  관리자
+                  {t.nav.admin}
                 </span>
                 {adminLinks.map((link) => (
                   <Link
@@ -163,6 +174,16 @@ export function Header() {
               </div>
             )}
 
+            <div className="border-t border-geul-border pt-3 mt-1 flex flex-col gap-3">
+              {/* Mobile Language Toggle */}
+              <button
+                onClick={() => { toggleLang(); setMenuOpen(false); }}
+                className="text-sm py-1 text-geul-text-secondary hover:text-geul-text transition-colors text-left cursor-pointer"
+              >
+                {lang === "ko" ? "English" : "한국어"}
+              </button>
+            </div>
+
             <div className="border-t border-geul-border pt-3 mt-1">
               {user ? (
                 <div className="flex items-center justify-between">
@@ -170,7 +191,7 @@ export function Header() {
                     {nickname}
                     {isAdmin && (
                       <span className="ml-1.5 text-xs text-geul-warning">
-                        관리자
+                        {t.nav.admin}
                       </span>
                     )}
                   </span>
@@ -182,7 +203,7 @@ export function Header() {
                       setMenuOpen(false);
                     }}
                   >
-                    로그아웃
+                    {t.nav.logout}
                   </Button>
                 </div>
               ) : (
@@ -191,7 +212,7 @@ export function Header() {
                   onClick={() => setMenuOpen(false)}
                   className="text-sm text-geul-text-secondary hover:text-geul-text transition-colors"
                 >
-                  로그인
+                  {t.nav.login}
                 </Link>
               )}
             </div>

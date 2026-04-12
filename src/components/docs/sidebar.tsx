@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronDownIcon, ChevronRightIcon, MenuIcon, CloseIcon } from "@/components/icons";
+import { useLanguage } from "@/lib/i18n";
+import type { Language } from "@/lib/i18n";
 
 interface Doc {
   id: string;
@@ -15,11 +17,14 @@ interface Doc {
 interface SidebarProps {
   currentSlug?: string;
   initialDocs?: Doc[];
+  lang?: Language;
 }
 
-const CATEGORIES = ["시작하기", "핵심 문법", "표준 라이브러리", "고급", "참조"];
+export function Sidebar({ currentSlug, initialDocs, lang: serverLang }: SidebarProps) {
+  const { t, lang: clientLang } = useLanguage();
+  const lang = serverLang ?? clientLang;
+  const CATEGORIES = t.docs.categories;
 
-export function Sidebar({ currentSlug, initialDocs }: SidebarProps) {
   const [docs, setDocs] = useState<Doc[]>(initialDocs ?? []);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -94,7 +99,7 @@ export function Sidebar({ currentSlug, initialDocs }: SidebarProps) {
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
         className="lg:hidden fixed bottom-4 left-4 z-40 bg-geul-surface border border-geul-border rounded-lg p-2.5 text-geul-text-secondary hover:text-geul-text transition-colors cursor-pointer"
-        aria-label={mobileOpen ? "사이드바 닫기" : "사이드바 열기"}
+        aria-label={mobileOpen ? t.docs.sidebarClose : t.docs.sidebarOpen}
       >
         {mobileOpen ? <CloseIcon size={20} /> : <MenuIcon size={20} />}
       </button>
