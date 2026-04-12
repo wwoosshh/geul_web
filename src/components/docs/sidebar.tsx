@@ -29,6 +29,13 @@ export function Sidebar({ currentSlug, initialDocs, lang: serverLang }: SidebarP
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Sync when server sends new initialDocs (e.g. after language toggle refresh)
+  useEffect(() => {
+    if (initialDocs) {
+      setDocs(initialDocs);
+    }
+  }, [initialDocs]);
+
   useEffect(() => {
     if (initialDocs) return;
     fetch("/api/docs")
